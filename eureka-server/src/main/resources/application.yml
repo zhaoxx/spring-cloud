@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: eureka-server
+  profiles:
+    active: standalone
+server:
+  port: 8761
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+---
+spring:
+  profiles: standalone
+  boot:
+    admin:
+      client:
+        url: http://172.16.130.143:8769
+        username: admin
+        password: admin
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false # 单点的时候设置为 false 禁止注册自身
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+---
+spring:
+  profiles: eureka1
+  boot:
+    admin:
+      client:
+        url: http://10.5.105.25:8769
+        username: admin
+        password: admin
+eureka:
+  environment: prod
+  instance:
+    ip-address: 10.5.105.25
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://10.5.105.76:${server.port}/eureka/
+
+---
+spring:
+  profiles: eureka2
+  boot:
+    admin:
+      client:
+        url: http://10.5.105.25:8769
+        username: admin
+        password: admin
+eureka:
+  environment: prod
+  instance:
+    ip-address: 10.5.105.76
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://10.5.105.25:${server.port}/eureka/

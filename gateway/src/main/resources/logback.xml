@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="stdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %logger - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="LOG_INFO"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/opt/logs/gateway/info_%d{yyyyMMdd}_%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %logger[%line] - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="com.mia.gateway.config.StatisticsLogFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="LOG_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/opt/logs/gateway/error_%d{yyyyMMdd}_%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %logger[%line] - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="com.mia.gateway.config.StatisticsLogFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="statisticsAppender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/opt/logs/gateway/statistics/statistics_%d{yyyyMMdd}_%i.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%level] [%d{yyyy-MM-dd HH:mm:ss}] %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.mia" level="DEBUG" />
+    <logger name="com.alibaba.nacos" level="WARN" />
+
+    <logger name="org.springframework" level="WARN" />
+    <logger name="org.quartz" level="ERROR" />
+    <logger name="ch.qos" level="ERROR" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="java.sql" level="ERROR" />
+    <logger name="httpclient.wire" level="ERROR" />
+    <logger name="org.hibernate" level="ERROR" />
+    <logger name="org.mybatis" level="WARN" />
+    <logger name="freemarker.cache" level="ERROR" />
+    <logger name="druid.sql" level="ERROR" />
+<!--    <logger name="com.mia.gateway.config.GatewayAddParamFilter" level="INFO" >-->
+<!--        <appender-ref ref="statisticsAppender"/>-->
+<!--    </logger>-->
+    <logger name="io.netty" level="INFO"/>
+    <logger name="io.undertow" level="ERROR"/>
+    <logger name="mousio.etcd4j" level="ERROR"/>
+    <logger name="org.redisson.cluster" level="WARN" />
+    <logger name="com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver" level="WARN" />
+
+    <logger name="statisticsLog" level="INFO">
+        <appender-ref ref="statisticsAppender"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="stdoutAppender" />
+        <appender-ref ref="LOG_INFO" />
+        <appender-ref ref="LOG_ERROR" />
+    </root>
+</configuration>

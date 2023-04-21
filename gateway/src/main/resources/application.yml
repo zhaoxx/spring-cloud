@@ -1,0 +1,142 @@
+server:
+  port: 9999
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+spring:
+  application:
+    name: gateway
+  profiles:
+    active: dev
+  zipkin:
+    sender:
+      type: rabbit
+  sleuth:
+    sampler:
+      probability: 0.1
+#      rate: 2
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false #spring loadBalance替换ribbon
+    gateway:
+      default-filters:
+        - name: Retry
+          args:
+            methods: GET,POST
+            series:
+            exceptions:
+              #              - java.io.IOException
+              #              - org.springframework.cloud.gateway.support.TimeoutException
+              #              - java.net.SocketTimeoutException
+              - java.net.SocketException
+              - java.net.ConnectException
+      httpclient:
+        connect-timeout: 30000
+        response-timeout: 60s
+        pool:
+          max-idle-time: 10000
+#    gateway:
+#      routes:
+#        - id: single-provider  # test
+#          uri: lb://single-provider
+#          predicates:
+#          - Path=/single-provider/**
+#          filters:
+#          - RewritePath=/single-provider/(?<segment>.*), /$\{segment}
+#        - id: pop-micro-service-api  # pop微服务
+#          uri: lb://pop-micro-service-api
+#          predicates:
+#          - Path=/pop-micro-service-api/**
+#          filters:
+#          - RewritePath=/pop-micro-service-api/(?<segment>.*), /$\{segment}
+eureka:
+  instance:
+    prefer-ip-address: true #ip优先
+
+nacos:
+  config:
+    server-addr: 172.16.130.137:8849
+    namespace: public
+    group: api-gateway
+    autoRefresh: true
+    username: nacos
+    password: nacos
+    dataId: gateway-router
+    bootstrap:
+      enable: true
+      logEnable: true
+    type: json
+
+---
+spring:
+  profiles: dev
+#  zipkin:
+#    base-url: http://172.16.96.197:9411/
+  rabbitmq:
+    host: 172.16.130.136
+    port: 5672
+    username: miya_amqp_admin
+    password: miya_admin_pwd
+    virtualHost: /
+eureka:
+  client:
+    service-url:
+      defaultZone: http://172.16.130.143:8761/eureka/
+  instance:
+    ip-address: 172.16.130.143
+
+---
+server:
+  port: 8888
+spring:
+  profiles: prod1
+  #  zipkin:
+  #    base-url: http://10.5.105.76:9411/
+  rabbitmq:
+    host: 10.5.1.28
+    port: 5672
+    username: miya_amqp_admin
+    password: miya_admin_pwd
+    virtualHost: /
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.5.105.25:8761/eureka/,http://10.5.105.76:8761/eureka/
+  instance:
+    ip-address: 10.5.105.25
+nacos:
+  config:
+    server-addr: nacos.miaidc.com:8849
+
+---
+server:
+  port: 8888
+spring:
+  profiles: prod2
+  #  zipkin:
+  #    base-url: http://10.5.105.76:9411/
+  rabbitmq:
+    host: 10.5.1.28
+    port: 5672
+    username: miya_amqp_admin
+    password: miya_admin_pwd
+    virtualHost: /
+eureka:
+  client:
+    service-url:
+      defaultZone: http://10.5.105.25:8761/eureka/,http://10.5.105.76:8761/eureka/
+  instance:
+    ip-address: 10.5.105.76
+nacos:
+  config:
+    server-addr: nacos.miaidc.com:8849

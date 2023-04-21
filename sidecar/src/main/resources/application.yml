@@ -1,0 +1,36 @@
+server:
+  http2:
+    enabled: true
+  port: 9898
+  servlet:
+    context-path: /
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://172.16.96.197:8761/eureka
+spring:
+  application:
+    name: sidecar
+sidecar:
+  port: 9292
+  instance:
+    hostname: localhost
+  healthUri: http://localhost:9292/actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      endpoint:
+        metrics:
+          enabled: true
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+#        step: 15s
+#        descriptions: true
+#      tags:
+#        application: single-provider

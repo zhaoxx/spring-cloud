@@ -1,0 +1,51 @@
+spring:
+  security:
+    # 登陆所需的账号密码
+    user:
+      name: admin
+      password: admin
+  application:
+    name: admin-server
+  boot:
+    admin:
+      ui:
+        title: 服务监控中心
+server:
+  port: 8769
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+---
+spring:
+  profiles: standalone
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 172.16.130.143
+  client:
+    registry-fetch-interval-seconds: 5
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://172.16.130.143:8761/eureka/
+
+---
+spring:
+  profiles: prod
+eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: 10.5.105.25
+  client:
+    registry-fetch-interval-seconds: 5
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://10.5.105.25:8761/eureka/,http://10.5.105.76:8761/eureka/
+

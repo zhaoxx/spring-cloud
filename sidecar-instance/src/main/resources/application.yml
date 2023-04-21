@@ -1,0 +1,18 @@
+server:
+  http2:
+    enabled: true
+  port: 9292
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: sidecar-instance
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#      endpoint:
+#        metrics:
+#          enabled: true
